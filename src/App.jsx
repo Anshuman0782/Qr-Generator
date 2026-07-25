@@ -40,12 +40,16 @@ function App() {
   const [activeTab, setActiveTab] = useState(savedState.activeTab || 'link');
   const [toast, setToast] = useState({ show: false, message: '' });
 
+  // PWA Installation states
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [isInstallable, setIsInstallable] = useState(false);
+
   // Main QR code content state
-  const [data, setData] = useState(savedState.data || 'https://qrcadia.vercel.app');
+  const [data, setData] = useState(savedState.data || ''); //<-----
 
   // Input States
   // URL Input
-  const [url, setUrl] = useState(savedState.url !== undefined ? savedState.url : 'https://qrcadia.vercel.app');
+  const [url, setUrl] = useState(savedState.url !== undefined ? savedState.url : ''); //<----
   // Text Input
   const [text, setText] = useState(savedState.text || '');
   // File Upload Input
@@ -156,6 +160,46 @@ function App() {
     errorCorrectionLevel, downloadFormat, qrName
   ]);
 
+  // Handle PWA Installation prompting
+  useEffect(() => {
+    // Hide download button if app is already running in standalone mode (installed)
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    if (isStandalone) {
+      setIsInstallable(false);
+      return;
+    }
+
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setIsInstallable(true);
+    };
+
+    const handleAppInstalled = () => {
+      setIsInstallable(false);
+      setDeferredPrompt(null);
+      showToast('App installed successfully! You can now run it locally.');
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('appinstalled', handleAppInstalled);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleAppInstalled);
+    };
+  }, []);
+
+  const handleInstallApp = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setIsInstallable(false);
+      setDeferredPrompt(null);
+    }
+  };
+
   // Initialize QR Code Styling instance
   useEffect(() => {
     qrInstanceRef.current = new QRCodeStyling({
@@ -247,7 +291,7 @@ function App() {
   useEffect(() => {
     switch (activeTab) {
       case 'link':
-        setData(url || 'https://qrcadia.vercel.app');
+        setData(url || '');  // <-- Default to homepage if URL is empty
         break;
       case 'text':
         setData(text || ' ');
@@ -576,10 +620,18 @@ function App() {
         </div>
         <p>Convert any link, image, text, document or contact info into a custom-designed QR code instantly.</p>
 
-        {/* Theme Switcher Button */}
-        <button onClick={toggleTheme} className="theme-toggle-btn" aria-label="Toggle theme">
-          {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
-        </button>
+        {/* Header Actions: PWA Download & Theme Toggle */}
+        <div className="header-actions">
+          {isInstallable && (
+            <button onClick={handleInstallApp} className="install-app-btn" aria-label="Download Software / App">
+              <Download size={20} />
+            </button>
+          )}
+
+          <button onClick={toggleTheme} className="theme-toggle-btn" aria-label="Toggle theme">
+            {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
+        </div>
       </header>
 
       {/* Main App Layout */}

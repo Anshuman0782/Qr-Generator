@@ -1,0 +1,18 @@
+{
+  "short_name": "Qrcadia",
+  "name": "Qrcadia Pro QR Generator",
+  "description": "Convert links, contacts, WiFi, text or communications into custom QR codes instantly.",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "72x72 96x96 128x128 144x144 152x152 192x192 384x384 512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#0a0b10",
+  "theme_color": "#00f2fe",
+  "display": "standalone",
+  "orientation": "portrait"
+}
