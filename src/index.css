@@ -823,3 +823,29 @@ footer a:hover {
   max-width: 250px;
 }
 
+.btn-reset {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: 1.5px dashed rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-reset:hover {
+  background: rgba(239, 68, 68, 0.05);
+  border-color: #ef4444;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.15);
+}
+
+.btn-reset:active {
+  transform: scale(0.98);
+}
+

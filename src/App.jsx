@@ -3,7 +3,8 @@ import QRCodeStyling from 'qr-code-styling';
 import { 
   Link2, FileText, FileUp, Wifi, Contact, MessageSquare, 
   Download, Copy, Trash2, CheckCircle2, QrCode, Sun, Moon, 
-  Smartphone, Plus, Sparkles, ExternalLink, Image as ImageIcon
+  Smartphone, Plus, Sparkles, ExternalLink, Image as ImageIcon,
+  RotateCcw
 } from 'lucide-react';
 
 // Pre-packaged logos that users can embed in the center of their QR code
@@ -125,6 +126,64 @@ function App() {
   // Toggle Theme
   const toggleTheme = () => {
     setTheme(prevTheme => prevTheme === 'dark' ? 'light' : 'dark');
+  };
+
+  // Restart / Reset state to defaults
+  const handleReset = () => {
+    if (window.confirm("Are you sure you want to restart? This will clear all inputs and reset styles.")) {
+      try {
+        localStorage.removeItem('qrcadia_state');
+      } catch (e) {
+        console.error(e);
+      }
+
+      setUrl('https://qr-generator0782.vercel.app/');
+      setText('');
+      setFile(null);
+      setUploadedUrl('');
+      setFileUrlType('direct');
+      setWifiSsid('');
+      setWifiPassword('');
+      setWifiSecurity('WPA');
+      setWifiHidden(false);
+      setContactName('');
+      setContactPhone('');
+      setContactEmail('');
+      setContactOrg('');
+      setContactTitle('');
+      setContactUrl('');
+      setCommType('email');
+      setEmailTo('');
+      setEmailSubject('');
+      setEmailBody('');
+      setSmsPhone('');
+      setSmsMessage('');
+      setWaPhone('');
+      setWaMessage('');
+
+      setDotsType('square');
+      setDotsColor('#000000');
+      setDotsColor2('#000000');
+      setDotsGradient(false);
+      setGradientAngle(0);
+      setBgColor('#ffffff');
+      setEyeSquareType('square');
+      setEyeSquareColor('#000000');
+      setEyeDotType('square');
+      setEyeDotColor('#000000');
+      setLogoPreset('none');
+      setCustomLogoUrl('');
+      setLogoSize(0.4);
+      setLogoMargin(4);
+      setErrorCorrectionLevel('Q');
+      setDownloadFormat('png');
+      setQrName('');
+      setActiveTab('link');
+
+      setData('https://qr-generator0782.vercel.app/');
+
+      showToast('Cleared all inputs and settings!');
+    }
   };
 
   // Sync theme with HTML document attribute
@@ -1384,6 +1443,10 @@ function App() {
                 <Download size={18} /> Save / Download
               </button>
             </div>
+
+            <button className="btn-reset" onClick={handleReset} style={{ marginTop: '1rem', width: '100%' }}>
+              <RotateCcw size={18} /> Restart / Clear All
+            </button>
           </div>
         </div>
       </main>
